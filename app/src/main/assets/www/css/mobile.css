@@ -20,12 +20,25 @@
   --header-h: 0px;
 }
 
-html, body { overflow-x: hidden; background: var(--bg); }
+/* ⚠️ 横向溢出只在 html 上截，千万别顺手也写到 body 上。
+   overflow-x 一旦不是 visible，同一元素的 overflow-y 就会被计算成 auto ——
+   body 于是变成一个「自身高度等于内容、根本滚不动」的滚动容器，
+   手指滑动全被它吃掉；而它上面又挂着 overscroll-behavior-y: contain，
+   滚动链传不到视口。三者一叠加，就是整页滑不动。
+
+   最坑的地方：脚本 window.scrollTo 照样好使，只有真手指滑动才复现，
+   所以在桌面浏览器里点半天都查不出来。要验就用真触摸手势
+   （tools/scroll-probe.py 发 CDP synthesizeScrollGesture）。 */
+html {
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;   /* 挡住回弹/下拉刷新，挂在视口上才对 */
+  background: var(--bg);
+}
 
 body {
+  background: var(--bg);
   color: var(--text);
   -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: contain;
 }
 
 /* 桌面期的顶部大导航在手机上没位置 */
@@ -232,6 +245,17 @@ body {
 }
 
 #playerMount { background: #000; }
+
+/* 横屏时播放器会占满整个视口高度（.jkp 是 16:9 + width:100%，
+   在 1280x720 上算出来正好 720px）。而播放器带着 touch-action: none ——
+   它要接管手势做音量/快进，这是故意的 —— 于是手指落在播放器上就被吃掉，
+   下面的选集、简介永远够不着，整页跟死了一样。
+   封个高度上限，保证播放器下面总有一截能上手的内容区。
+   object-fit: contain 会把画面居中留黑边，不会变形。 */
+@media (orientation: landscape) {
+  .jkp { max-height: 62vh; }
+  .jkp.portrait { max-height: 62vh; }
+}
 
 .m-play .jk-play-actions {
   display: flex; gap: 8px; flex-wrap: nowrap;

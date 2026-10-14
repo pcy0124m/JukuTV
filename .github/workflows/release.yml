@@ -103,8 +103,17 @@ jobs:
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then
             TAG="$GITHUB_REF_NAME"
           else
-            TAG="v0.1.${GITHUB_RUN_NUMBER}"
+            # tag 跟 APK 里的 versionName 对齐。
+            # 早先用 run_number 拼，结果出现「tag 写着 v0.1.2、装上去是 0.2.0」，
+            # 版本号两处各说各话，排查时很费劲。
+            VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts)
+            if [ -z "$VERSION" ]; then
+              echo "::error::没能从 app/build.gradle.kts 里读到 versionName"
+              exit 1
+            fi
+            TAG="v$VERSION"
           fi
+          # 同版本重复构建时直接覆盖，保持幂等
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" release-assets/* --clobber
           else
