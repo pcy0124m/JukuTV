@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0F0F14">
+<title>剧库</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237c3aed'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>剧</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/duanju.css">
+<link rel="stylesheet" href="css/juku.css">
+<link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+
+<header class="m-top">
+  <div class="m-brand"><span class="m-logo">剧</span>剧库</div>
+  <form class="jk-search" id="jkSearchForm">
+    <span>🔍</span>
+    <input id="jkKw" type="search" placeholder="搜剧名 / 类型" autocomplete="off">
+    <button type="submit" id="jkSearchBtn">搜索</button>
+  </form>
+</header>
+
+<main class="m-main" id="mMain">
+  <div class="m-title">
+    <div class="jk-h1" id="jkH1">推荐</div>
+    <div class="jk-sub" id="jkSub">加载中…</div>
+  </div>
+
+  <div class="m-sec" id="mContinue">
+    <div class="m-sec-t">继续观看</div>
+    <div class="jk-continue" id="jkContinue"></div>
+  </div>
+
+  <div class="dj-cats" id="jkCats"></div>
+  <div class="dj-grid" id="jkGrid"></div>
+  <div class="jk-pager" id="jkPager"></div>
+</main>
+
+<nav class="m-tabbar">
+  <div class="m-tabs" id="jkNav"></div>
+  <button class="jk-nav m-tab" id="jkSettingsBtn"><span class="ico">⚙️</span>设置</button>
+</nav>
+
+<script src="js/jk-core.js"></script>
+<script src="js/juku-api.js"></script>
+<script src="js/juku.js"></script>
+<script>
+(function () {
+  var top = 0;
+  try { if (window.JKShell && JKShell.safeTop) top = JKShell.safeTop(); } catch (e) {}
+  document.documentElement.style.setProperty('--safe-top', (top || 0) + 'px');
+
+  // 没有观看记录时，整块「继续观看」收起来，别占着首屏
+  var sec = document.getElementById('mContinue');
+  var box = document.getElementById('jkContinue');
+  if (sec && box && window.MutationObserver) {
+    var sync = function () {
+      sec.hidden = !box.querySelector('.jk-cc');
+    };
+    new MutationObserver(sync).observe(box, { childList: true });
+    sync();
+  }
+})();
+</script>
+</body>
+</html>

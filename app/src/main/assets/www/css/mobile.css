@@ -1,0 +1,268 @@
+/* ============================================================
+   剧库 · 手机版
+   在 style.css / duanju.css / juku.css / jk-player.css 之后加载，
+   只管两件事：把浅色主题整体换成深色；把桌面布局改成手机布局。
+   原桌面版一行没动，两边各自能跑。
+   ============================================================ */
+
+:root {
+  --bg: #0F0F14;
+  --bg-soft: #16161E;
+  --card: #1A1A24;
+  --border: #2A2A38;
+  --text: #EDEDF2;
+  --text-2: #A8AABC;
+  --text-3: #71758A;
+  --primary: #7C3AED;
+  --primary-2: #A855F7;
+  --shadow: 0 2px 10px rgba(0, 0, 0, .35);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, .55);
+  --header-h: 0px;
+}
+
+html, body { overflow-x: hidden; background: var(--bg); }
+
+body {
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+}
+
+/* 桌面期的顶部大导航在手机上没位置 */
+.header { display: none !important; }
+.jk-shell { display: block; min-height: 0; }
+.jk-side { display: none !important; }
+.jk-main { padding: 0 !important; }
+
+/* ---------- 顶部搜索区 ---------- */
+.m-top {
+  position: sticky; top: 0; z-index: 50;
+  padding: calc(var(--safe-top, 0px) + 12px) 14px 12px;
+  background: rgba(15, 15, 20, .95);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.m-brand {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 17px; font-weight: 800; letter-spacing: .3px;
+  margin-bottom: 11px;
+}
+
+.m-logo {
+  width: 25px; height: 25px; border-radius: 8px;
+  background: linear-gradient(135deg, #7C3AED, #A855F7);
+  display: grid; place-items: center;
+  font-size: 13px; font-weight: 700; color: #fff;
+}
+
+.m-top .jk-search {
+  width: 100%; max-width: none;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 0 12px; height: 42px;
+  display: flex; align-items: center; gap: 8px;
+}
+.m-top .jk-search > span { font-size: 14px; opacity: .6; }
+.m-top .jk-search input {
+  flex: 1; min-width: 0; height: 100%;
+  border: 0; outline: none; background: none;
+  color: var(--text); font-size: 14px;
+}
+.m-top .jk-search input::placeholder { color: var(--text-3); }
+.m-top .jk-search button {
+  border: 0; border-radius: 9px; padding: 7px 15px;
+  background: linear-gradient(135deg, #7C3AED, #A855F7);
+  color: #fff; font-size: 13px; font-weight: 700;
+}
+
+/* ---------- 主区 ---------- */
+.m-main { padding: 14px 14px calc(78px + env(safe-area-inset-bottom, 0px)); }
+
+.m-title { margin-bottom: 13px; }
+.m-title .jk-h1 { font-size: 20px; font-weight: 800; margin: 0 0 4px; }
+.m-title .jk-sub { font-size: 12px; color: var(--text-3); margin: 0; }
+
+/* ---------- 继续观看 ---------- */
+.m-sec { margin-bottom: 16px; }
+.m-sec .m-sec-t {
+  font-size: 13px; font-weight: 700; color: var(--text-2);
+  margin-bottom: 9px;
+}
+/* 覆盖 juku.css 里 860px 以下把 .jk-continue 藏起来的规则 */
+.m-main .jk-continue {
+  display: flex; flex-direction: row; gap: 10px;
+  overflow-x: auto; padding: 2px 0 6px;
+  scrollbar-width: none;
+}
+.m-main .jk-continue::-webkit-scrollbar { display: none; }
+.m-main .jk-cc {
+  flex: 0 0 168px; width: 168px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 7px;
+}
+.m-main .jk-cc-b { gap: 3px; }
+.m-main .jk-cc-bar { background: #2C2C3C; }
+
+/* ---------- 分类 chips ---------- */
+.m-main .dj-cats {
+  display: flex; gap: 8px; flex-wrap: nowrap;
+  overflow-x: auto; margin: 0 -14px 14px; padding: 0 14px 4px;
+  scrollbar-width: none;
+}
+.m-main .dj-cats::-webkit-scrollbar { display: none; }
+.m-main .dj-cat {
+  flex: 0 0 auto; padding: 7px 15px; font-size: 13px;
+  background: var(--card); border: 1px solid var(--border); color: var(--text-2);
+  border-radius: 20px;
+}
+
+/* ---------- 卡片网格：固定两列 ---------- */
+.m-main .dj-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px;
+}
+.m-main .dj-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 13px;
+}
+.m-main .dj-card:hover { transform: none; box-shadow: none; }
+.m-main .dj-card .poster { background: #23232F; }
+.m-main .dj-card .poster .ph-fallback { background: linear-gradient(135deg, #33265c, #7C3AED); }
+.m-main .dj-card .dj-name { font-size: 13px; padding: 9px 9px 10px; min-height: 42px; }
+.m-main .dj-card .jk-src-tag { background: rgba(124, 58, 237, .9); color: #fff; }
+.m-main .dj-card .play-mask { display: none; }
+
+.m-main .jk-panel,
+.m-main .jk-skel { background: var(--card); border-color: var(--border); }
+.m-main .jk-skel .ph,
+.m-main .jk-skel .ln { background: #23232F; }
+
+/* ---------- 分页 ---------- */
+.m-main .jk-pager {
+  display: flex; gap: 7px; flex-wrap: nowrap;
+  overflow-x: auto; justify-content: flex-start;
+  margin: 20px -14px 0; padding: 0 14px 6px;
+  scrollbar-width: none;
+}
+.m-main .jk-pager::-webkit-scrollbar { display: none; }
+.m-main .jk-pg {
+  flex: 0 0 auto; min-width: 36px; height: 34px; padding: 0 12px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text-2); border-radius: 9px; font-size: 13px;
+}
+.m-main .jk-pg.on { border-color: transparent; }
+.m-main .jk-pg-jump {
+  flex: 0 0 auto; background: var(--card); color: var(--text);
+  border: 1px solid var(--border); height: 34px;
+}
+.m-main .jk-pg-info { flex: 0 0 auto; white-space: nowrap; }
+
+/* ---------- 底部 tab ---------- */
+.m-tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  display: flex; align-items: stretch;
+  background: rgba(18, 18, 25, .97);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 2px);
+}
+
+.m-tabs { display: flex; flex: 1; min-width: 0; }
+
+.m-tabbar .jk-nav {
+  flex: 1 1 0; min-width: 0; width: auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; padding: 9px 2px 8px;
+  background: none !important; box-shadow: none !important;
+  border-radius: 0; text-align: center;
+  font-size: 10.5px; font-weight: 600; color: var(--text-3);
+  white-space: nowrap; overflow: hidden;
+}
+.m-tabbar .jk-nav .ico { font-size: 19px; width: auto; line-height: 1; }
+.m-tabbar .jk-nav .cnt { display: none; }
+.m-tabbar .jk-nav.on { color: var(--primary-2); }
+.m-tabbar .jk-nav.m-set { flex: 0 0 62px; border-left: 1px solid var(--border); }
+
+/* ============================================================
+   播放页
+   ============================================================ */
+
+.m-play { background: var(--bg); }
+
+.m-playbar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 10px;
+  padding: calc(var(--safe-top, 0px) + 8px) 12px 8px;
+  background: rgba(15, 15, 20, .96);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.m-playbar .m-back {
+  flex: 0 0 34px; width: 34px; height: 34px;
+  border-radius: 50%; border: 1px solid var(--border);
+  background: var(--card); color: var(--text);
+  font-size: 20px; line-height: 1; padding: 0 0 3px;
+  display: grid; place-items: center;
+}
+
+.m-playbar .m-playbar-t { min-width: 0; flex: 1; }
+.m-playbar .jk-watch-title {
+  font-size: 15px; font-weight: 700; line-height: 1.3;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.m-playbar .jk-watch-meta {
+  font-size: 11.5px; color: var(--text-3);
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+
+#playerMount { background: #000; }
+
+.m-play .jk-play-actions {
+  display: flex; gap: 8px; flex-wrap: nowrap;
+  overflow-x: auto; margin: 0; padding: 12px 14px;
+  scrollbar-width: none;
+}
+.m-play .jk-play-actions::-webkit-scrollbar { display: none; }
+.m-play .jk-pbtn {
+  flex: 0 0 auto; padding: 8px 14px; font-size: 12.5px;
+  background: var(--card); border: 1px solid var(--border); color: var(--text-2);
+  border-radius: 10px; white-space: nowrap;
+}
+.m-play .jk-pbtn.on { background: rgba(124, 58, 237, .18); border-color: #7C3AED; color: #C4B5FD; }
+
+.m-play-main { padding: 2px 14px calc(28px + env(safe-area-inset-bottom, 0px)); }
+
+.m-play-main .jk-panel {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px; margin-bottom: 12px;
+}
+.m-play-main .jk-panel h4 { font-size: 13.5px; font-weight: 700; margin-bottom: 10px; }
+
+.m-play-main .jk-eps {
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  gap: 7px; max-height: none;
+}
+.m-play-main .jk-ep {
+  height: 36px; font-size: 12px;
+  background: #23232F; border-color: var(--border); color: var(--text-2);
+}
+.m-play-main .jk-ep.on { border-color: transparent; }
+
+.m-play-main .jk-meta-tags span { background: rgba(124, 58, 237, .16); color: #C4B5FD; }
+.m-play-main .jk-cover-row img { background: #23232F; }
+.m-play-main .jk-intro { font-size: 12.5px; color: var(--text-2); }
+
+.m-foot {
+  font-size: 11px; color: var(--text-3); line-height: 1.8;
+  text-align: center; padding: 6px 4px 0;
+}
+
+/* ---------- 设置弹层深色化 ---------- */
+.jk-modal { background: #1A1A24; color: var(--text); }
+.jk-mask { background: rgba(0, 0, 0, .6); }
+.jk-abtn { background: var(--card); border-color: var(--border); color: var(--text-2); }
+.jk-abtn.danger { background: var(--card); border-color: #7F2A2A; color: #F09595; }
+.jk-sw { background: #3A3A4A; }
+.jk-sw::after { background: #fff; }
+.jk-sw.on { background: #7C3AED; }
+.jk-kbd { color: var(--text-2); }
+.jk-toast { bottom: 86px; }

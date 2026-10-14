@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0F0F14">
+<title>剧库 · 播放</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237c3aed'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>剧</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/duanju.css">
+<link rel="stylesheet" href="css/juku.css">
+<link rel="stylesheet" href="css/jk-player.css">
+<link rel="stylesheet" href="css/mobile.css">
+</head>
+<body class="m-play">
+
+<div class="m-playbar">
+  <button class="m-back" id="wBack" type="button">‹</button>
+  <div class="m-playbar-t">
+    <div class="jk-watch-title" id="wTitle">加载中…</div>
+    <div class="jk-watch-meta" id="wMeta"></div>
+  </div>
+</div>
+
+<div id="playerMount"></div>
+
+<div class="jk-play-actions">
+  <button class="jk-pbtn" id="btnAutoNext" title="一集播完自动接下一集">
+    <span id="autoNextIco">🔁</span><span id="autoNextTxt">连播</span>
+  </button>
+  <button class="jk-pbtn" id="btnResume" title="跳回上次看到的位置">⏱ 上次</button>
+  <button class="jk-pbtn" id="btnRate" title="切换播放倍速">⚡ <b id="rateNow">1.0x</b></button>
+  <button class="jk-pbtn" id="btnFull">⛶ 全屏</button>
+  <button class="jk-pbtn" id="btnReload">🔄 重载</button>
+  <button class="jk-pbtn" id="btnSetting">⚙️ 设置</button>
+</div>
+
+<main class="m-play-main">
+  <div class="jk-panel">
+    <h4>选集 <span class="n" id="epCount"></span></h4>
+    <div class="jk-eps" id="wEps"><div style="font-size:12.5px;color:var(--text-3);padding:6px 2px">加载中…</div></div>
+  </div>
+
+  <div class="jk-panel">
+    <h4>简介</h4>
+    <div class="jk-cover-row">
+      <img id="wCover" src="" alt="" onerror="this.style.visibility='hidden'">
+      <div style="min-width:0">
+        <div class="jk-meta-tags" id="wTags"></div>
+        <div style="font-size:12px;color:var(--text-3);line-height:1.8" id="wInfo"></div>
+      </div>
+    </div>
+    <div class="jk-intro" id="wIntro">加载中…</div>
+  </div>
+
+  <p class="m-foot">内容版权归各出品方所有，本站仅聚合展示公开接口数据，仅供个人学习交流使用。</p>
+</main>
+
+<script src="js/jk-core.js"></script>
+<script src="js/juku-api.js"></script>
+<script src="js/jk-player.js"></script>
+<script src="js/watch.js"></script>
+<script>
+(function () {
+  var top = 0;
+  try { if (window.JKShell && JKShell.safeTop) top = JKShell.safeTop(); } catch (e) {}
+  document.documentElement.style.setProperty('--safe-top', (top || 0) + 'px');
+
+  var back = document.getElementById('wBack');
+  if (back) {
+    back.addEventListener('click', function () {
+      if (history.length > 1) history.back();
+      else location.href = 'index.html';
+    });
+  }
+})();
+</script>
+</body>
+</html>
