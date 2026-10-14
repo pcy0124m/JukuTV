@@ -41,6 +41,24 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug --no-daemon --stacktrace
 
+      # 电视直播模块靠 assets 里的两个文件活着（频道表 + 注入脚本）。
+      # 少了它们 APK 能装能开，但一点「直播」就白屏 —— 静态检查看不出来，
+      # 所以在 CI 里直接把 APK 拆开验一眼。
+      - name: 校验直播资源已打进包
+        run: |
+          APK=$(ls app/build/outputs/apk/debug/*.apk | head -n 1)
+          echo "检查 $APK"
+          unzip -l "$APK" | grep -E 'assets/(channels\.json|inject\.js)' || {
+            echo "::error::APK 里缺少 assets/channels.json 或 assets/inject.js（电视直播会白屏）"
+            exit 1
+          }
+          unzip -l "$APK" | grep -E 'assets/www/index\.html' || {
+            echo "::error::APK 里缺少 assets/www/index.html"
+            exit 1
+          }
+          echo "--- assets 清单 ---"
+          unzip -l "$APK" | grep -E 'assets/' | head -40
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:

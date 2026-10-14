@@ -34,6 +34,16 @@
             </intent-filter>
         </activity>
 
+        <!-- 电视直播：横屏，WebView 加载央视频官方直播页 + 注入脚本。
+             由剧库页的「直播」入口拉起，按返回键回到剧库。 -->
+        <activity
+            android:name=".LiveActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|uiMode|density"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/LiveTheme" />
+
     </application>
 
 </manifest>

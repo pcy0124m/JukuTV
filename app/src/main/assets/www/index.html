@@ -14,7 +14,10 @@
 <body>
 
 <header class="m-top">
-  <div class="m-brand"><span class="m-logo">剧</span>剧库</div>
+  <div class="m-brand">
+    <span class="m-logo">剧</span>剧库
+    <button class="m-gear" id="jkSettingsBtn" type="button" aria-label="播放设置">⚙</button>
+  </div>
   <form class="jk-search" id="jkSearchForm">
     <span>🔍</span>
     <input id="jkKw" type="search" placeholder="搜剧名 / 类型" autocomplete="off">
@@ -39,8 +42,10 @@
 </main>
 
 <nav class="m-tabbar">
+  <button class="jk-nav m-live" id="jkLiveBtn" type="button">
+    <span class="ico">📺</span>直播
+  </button>
   <div class="m-tabs" id="jkNav"></div>
-  <button class="jk-nav m-tab" id="jkSettingsBtn"><span class="ico">⚙️</span>设置</button>
 </nav>
 
 <script src="js/jk-core.js"></script>
@@ -56,11 +61,20 @@
   var sec = document.getElementById('mContinue');
   var box = document.getElementById('jkContinue');
   if (sec && box && window.MutationObserver) {
-    var sync = function () {
-      sec.hidden = !box.querySelector('.jk-cc');
-    };
+    var sync = function () { sec.hidden = !box.querySelector('.jk-cc'); };
     new MutationObserver(sync).observe(box, { childList: true });
     sync();
+  }
+
+  // 直播是原生 Activity（横屏 + 频道列表），网页这边只负责把桥叫起来
+  var live = document.getElementById('jkLiveBtn');
+  if (live) {
+    live.addEventListener('click', function () {
+      if (window.JKShell && JKShell.openLive) {
+        try { JKShell.openLive(); return; } catch (e) {}
+      }
+      if (window.JK && JK.toast) JK.toast('电视直播需要装成 APK 才能用');
+    });
   }
 })();
 </script>

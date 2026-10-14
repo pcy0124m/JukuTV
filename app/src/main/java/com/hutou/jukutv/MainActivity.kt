@@ -2,6 +2,7 @@ package com.hutou.jukutv
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
@@ -211,8 +212,20 @@ class MainActivity : Activity() {
             }
         }
 
+        /** 切到电视直播模块（横屏，自带频道列表，按返回回到剧库） */
         @JavascriptInterface
-        fun version(): String = "0.1.0"
+        fun openLive() {
+            runOnUiThread {
+                try {
+                    startActivity(Intent(this@MainActivity, LiveActivity::class.java))
+                } catch (e: Throwable) {
+                    toast("直播模块启动失败：" + (e.message ?: "未知错误"))
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun version(): String = "0.2.0"
     }
 
     /* ================================================================== */

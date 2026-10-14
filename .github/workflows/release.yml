@@ -71,6 +71,17 @@ jobs:
           echo "$APK" | grep -q "unsigned" && { echo "::error::产出的是未签名包"; exit 1; } || true
           keytool -printcert -jarfile "$APK" | head -10
 
+      # 电视直播模块的资产：少了这两个文件，APK 能装能开，点「直播」白屏
+      - name: 校验直播资源已打进包
+        run: |
+          APK=$(ls app/build/outputs/apk/release/*.apk | head -n 1)
+          unzip -l "$APK" | grep -E 'assets/(channels\.json|inject\.js)' || {
+            echo "::error::APK 里缺少 assets/channels.json 或 assets/inject.js（电视直播会白屏）"
+            exit 1
+          }
+          echo "--- assets 清单 ---"
+          unzip -l "$APK" | grep -E 'assets/' | head -40
+
       - name: Collect artifacts
         run: |
           mkdir -p release-assets

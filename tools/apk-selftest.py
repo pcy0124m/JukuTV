@@ -63,10 +63,16 @@ def run():
           const imgs = Array.from(document.querySelectorAll('.dj-card img'));
           const tabbar = document.querySelector('.m-tabbar');
           const sec = document.getElementById('mContinue');
+          const live = document.getElementById('jkLiveBtn');
+          const gear = document.getElementById('jkSettingsBtn');
           return {
             cards: document.querySelectorAll('.dj-card').length,
             covers: imgs.filter(i => i.naturalWidth > 0).length,
-            tabs: document.querySelectorAll('.m-tabbar .jk-nav').length,
+            tabs: document.querySelectorAll('.m-tabs .jk-nav').length,
+            hasLive: !!live,
+            hasGear: !!gear,
+            gearTop: gear ? Math.round(gear.getBoundingClientRect().top) : -1,
+            liveW: live ? Math.round(live.getBoundingClientRect().width) : -1,
             tabBottom: tabbar ? Math.round(window.innerHeight - tabbar.getBoundingClientRect().bottom) : -1,
             overflowX: document.documentElement.scrollWidth - window.innerWidth,
             continueHidden: sec ? sec.hidden : null,
@@ -75,9 +81,26 @@ def run():
         }""")
         note('列表', '卡片 %d 张，封面 %d 张' % (s['cards'], s['covers']))
         note('列表', '底部 tab %d 个 | %s' % (s['tabs'], s['sub']))
+        note('入口', '直播按钮 %s（宽 %dpx）| 顶部设置按钮 %s（y=%d）' % (
+            '在' if s['hasLive'] else '缺', s['liveW'],
+            '在' if s['hasGear'] else '缺', s['gearTop']))
         note('布局', '底栏贴底 %dpx，横向溢出 %dpx' % (s['tabBottom'], s['overflowX']))
         note('布局', '空「继续观看」已收起：%s' % ('是' if s['continueHidden'] else '否'))
         pg.screenshot(path=os.path.join(OUT, '1_list.png'))
+
+        # ---------- 1b. 直播入口在网页里应有降级提示 ----------
+        # 浏览器预演里没有 JKShell 桥，点它不该白点 —— 应弹「要装成 APK」的提示
+        pg.locator('#jkLiveBtn').click()
+        pg.wait_for_timeout(600)
+        tip = pg.evaluate("""() => {
+          const t = document.querySelector('.jk-toast');
+          return t ? t.textContent : null;
+        }""")
+        if tip and 'APK' in tip:
+            note('入口', '无桥时降级提示正常：%s' % tip)
+        else:
+            note('入口', '降级提示未出现（toast=%r）' % tip)
+            errors.append('[live] 直播入口在无桥环境下没有给出降级提示')
 
         # ---------- 2. 点卡片能进播放页 ----------
         pg.locator('.dj-card').first.click()
@@ -88,7 +111,7 @@ def run():
         # ---------- 3. 切分类 ----------
         pg.goto(BASE + '/index.html', wait_until='domcontentloaded')
         pg.wait_for_selector('.dj-card', timeout=30000)
-        pg.locator('.m-tabbar .jk-nav').nth(1).click()
+        pg.locator('.m-tabs .jk-nav').nth(1).click()
         pg.wait_for_timeout(6000)
         chips = pg.locator('.dj-cat').count()
         note('分类', '切到短剧 -> %s' % pg.inner_text('#jkSub'))

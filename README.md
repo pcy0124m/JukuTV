@@ -28,15 +28,41 @@ app/src/main/java/com/hutou/jukutv/
   NetProxy.kt     上游转发 + m3u8 重写 + 流式管道
   MainActivity.kt WebView 宿主、全屏、返回键、JS 桥
 
-app/src/main/assets/www/          手机版前端（深色主题）
-  index.html                     剧库列表
-  detail.html                    播放页
-  js/juku-api.js                 数据层（桌面版 lib/juku.js 的浏览器移植）
-  js/juku.js  watch.js           界面逻辑
-  js/jk-player.js                自研播放器（无原生 controls）
-  lib/hls.min.js                 hls.js，本地打包，离线可用
-  css/mobile.css                 手机布局
+  # ---- 电视直播（另一条通路，不经过上面那个代理）----
+  LiveActivity.kt 横屏 Activity：加载央视频官方页 + 注入脚本 + 频道列表浮层
+  Channels.kt     48 个台的频道表读取、WebEngine（带真实内核版本的桌面 UA）
+  ChannelOverlay.kt 频道列表浮层（点台换台、显示 EPG 节目名）
+  Epg.kt          节目单查询
+
+app/src/main/assets/
+  channels.json   48 个台：名称 / 央视频 pid / 备用地址
+  inject.js       注入到官方直播页里的脚本：剪枝成纯播放器 + 回报状态
+  www/            手机版前端（深色主题）
+    index.html                     剧库列表（底部有「直播」入口）
+    detail.html                    播放页
+    js/juku-api.js                 数据层（桌面版 lib/juku.js 的浏览器移植）
+    js/juku.js  watch.js           界面逻辑
+    js/jk-player.js                自研播放器（无原生 controls）
+    lib/hls.min.js                 hls.js，本地打包，离线可用
+    css/mobile.css                 手机布局
 ```
+
+### 电视直播是怎么接进来的
+
+YangshiTV 的直播源**不是 m3u8**，是央视频的官方直播网页。想让它好看，得靠脚本把页面
+剪成只剩播放器 —— 跨域 iframe 里注入不了，所以必须有自己掌控的 WebView。
+于是另开一个横屏 Activity，只做三件事：
+
+```
+LiveActivity  →  https://www.yangshipin.cn/tv/home?pid=<频道 pid>
+              →  onPageFinished / 进度 ≥70% 时注入 assets/inject.js
+              →  inject.js 通过 window.HTVNative.onEvent 往原生回报
+```
+
+`inject.js` 里**没有任何写死的 class 名或 id** —— 那站的 class 是构建时哈希出来的，
+今天写死明天就废。它只用「位置 + 尺寸 + getComputedStyle 结果」做启发式判断，
+所以官方改版一般不会立刻把它打挂。同一份脚本在桌面版（Electron）里也直接复用，
+两边接口名一致。
 
 ## 本地跑
 

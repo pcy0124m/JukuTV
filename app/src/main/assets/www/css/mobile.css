@@ -49,6 +49,16 @@ body {
   margin-bottom: 11px;
 }
 
+/* 设置按钮：原来是底部 tab 的一项，现在挂在品牌行最右 */
+.m-brand .m-gear {
+  margin-left: auto; flex: 0 0 30px; width: 30px; height: 30px;
+  border-radius: 9px; border: 1px solid var(--border);
+  background: var(--card); color: var(--text-2);
+  font-size: 15px; line-height: 1; padding: 0;
+  display: grid; place-items: center;
+}
+.m-brand .m-gear:active { background: #23232F; color: var(--text); }
+
 .m-logo {
   width: 25px; height: 25px; border-radius: 8px;
   background: linear-gradient(135deg, #7C3AED, #A855F7);
@@ -179,7 +189,14 @@ body {
 .m-tabbar .jk-nav .ico { font-size: 19px; width: auto; line-height: 1; }
 .m-tabbar .jk-nav .cnt { display: none; }
 .m-tabbar .jk-nav.on { color: var(--primary-2); }
-.m-tabbar .jk-nav.m-set { flex: 0 0 62px; border-left: 1px solid var(--border); }
+
+/* 直播走的是原生 Activity（横屏 + 频道列表），
+   跟网页内的 tab 切换不是一回事，所以单独框一块、加条分隔线。 */
+.m-tabbar .jk-nav.m-live {
+  flex: 0 0 68px; border-right: 1px solid var(--border);
+  color: var(--text-2);
+}
+.m-tabbar .jk-nav.m-live:active { background: rgba(124, 58, 237, .14) !important; }
 
 /* ============================================================
    播放页
