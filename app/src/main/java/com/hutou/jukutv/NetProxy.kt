@@ -146,7 +146,7 @@ object NetProxy {
 
         return WebResourceResponse(
             mime, encoding, code, "OK", h,
-            Closing(pipe(raw), conn)
+            Closing(pipe { raw }, conn)
         )
     }
 

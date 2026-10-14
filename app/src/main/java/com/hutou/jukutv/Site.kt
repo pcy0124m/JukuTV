@@ -11,9 +11,14 @@ import java.io.InputStream
  *
  * WebView 里页面跑在 https://app.local 下，所有请求都先落到这里：
  *
- *   https://app.local/*               → assets/www/ 下的静态文件
+ *   https://app.local/xxx             → assets/www/ 下的静态文件
  *   https://app.local/proxy?url=XXX   → NetProxy 转发到 XXX（m3u8 会被重写）
  *   http(s)://其它域名                 → 兜底转发（m3u8 重写漏网的地址不至于被 CORS 拦死）
+ *
+ * 注意：本文件里的块注释**不能出现斜杠加星号**那两个字。
+ * Kotlin 的块注释是可嵌套的，那个组合会开一层新注释，把后面的代码整段吞掉，
+ * 报错却是文件末尾一句莫名其妙的「Unclosed comment」，排查半天。
+ * 上面第一行原来就是写成通配符的样子，踩过一次。
  *
  * 关键收益：页面和接口同源，浏览器那套跨域规则完全用不上，
  * 前端代码不需要再加任何 Access-Control 相关的处理。

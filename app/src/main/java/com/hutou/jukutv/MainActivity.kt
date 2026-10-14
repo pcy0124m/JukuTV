@@ -146,7 +146,7 @@ class MainActivity : Activity() {
                 }
                 fullView = view
                 fullCallback = callback
-                view.isKeepScreenOn = true
+                view.keepScreenOn = true
                 root.addView(view, FrameLayout.LayoutParams(MATCH, MATCH))
                 web.visibility = View.GONE
             }
